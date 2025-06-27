@@ -6,23 +6,26 @@ interface RecordData {
 }
 
 export default function AdminPage() {
-  const [type, setType] = useState('hydrogen_plants');
+  const [type, setType] = useState('');
   const [records, setRecords] = useState<RecordData[]>([]);
   const [editing, setEditing] = useState<RecordData | null>(null);
 
   const load = async () => {
-    const res = await fetch(`/api/admin/records?type=${type}`);
+    const url = type ? `/api/admin/records?type=${type}` : '/api/admin/records';
+    const res = await fetch(url);
     const data = await res.json();
     setRecords(data);
   };
 
-  useEffect(() => { load(); }, [type]);
+  useEffect(() => {
+    load();
+  }, [type]);
 
   const save = async (rec: RecordData) => {
     await fetch('/api/admin/records', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, record: rec }),
+      body: JSON.stringify({ record: rec }),
     });
     setEditing(null);
     load();
@@ -31,34 +34,37 @@ export default function AdminPage() {
   return (
     <div style={{ padding: 20 }}>
       <h1>Admin</h1>
-      <select value={type} onChange={e => setType(e.target.value)}>
-        <option value="hydrogen_plants">hydrogen_plants</option>
-        <option value="wind_plants">wind_plants</option>
-        <option value="solar_plants">solar_plants</option>
-        <option value="storage_facilities">storage_facilities</option>
-        <option value="pipelines">pipelines</option>
-      </select>
+      <input
+        placeholder="project_type filter"
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+      />
       <button onClick={() => setEditing({})}>Add</button>
       <table border={1} cellPadding={4} style={{ marginTop: 20 }}>
         <thead>
           <tr>
-            {records[0] && Object.keys(records[0]).map(k => <th key={k}>{k}</th>)}
+            {records[0] && Object.keys(records[0]).map((k) => <th key={k}>{k}</th>)}
           </tr>
         </thead>
         <tbody>
           {records.map((r, i) => (
             <tr key={i} onClick={() => setEditing(r)}>
-              {Object.keys(r).map(k => <td key={k}>{String(r[k])}</td>)}
+              {Object.keys(r).map((k) => (
+                <td key={k}>{String(r[k])}</td>
+              ))}
             </tr>
           ))}
         </tbody>
       </table>
       {editing && (
         <div style={{ marginTop: 20 }}>
-          {Object.keys(records[0] || {}).map(k => (
+          {Object.keys(records[0] || {}).map((k) => (
             <div key={k}>
               <label>{k}</label>
-              <input value={editing[k] || ''} onChange={e => setEditing({ ...editing, [k]: e.target.value })} />
+              <input
+                value={editing[k] || ''}
+                onChange={(e) => setEditing({ ...editing, [k]: e.target.value })}
+              />
             </div>
           ))}
           <button onClick={() => save(editing)}>Save</button>
