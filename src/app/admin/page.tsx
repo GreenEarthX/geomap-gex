@@ -14,7 +14,8 @@ export default function AdminPage() {
     const url = type ? `/api/admin/records?type=${type}` : '/api/admin/records';
     const res = await fetch(url);
     const data = await res.json();
-    setRecords(data);
+    const flat = data.map((r: any) => ({ ...r, ...r.data }));
+    setRecords(flat);
   };
 
   useEffect(() => {
@@ -22,10 +23,19 @@ export default function AdminPage() {
   }, [type]);
 
   const save = async (rec: RecordData) => {
+    const { id, recorded_at, ...rest } = rec;
+    const { internal_no, excel_file, excel_sheet, ...data } = rest;
     await fetch('/api/admin/records', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ record: rec }),
+      body: JSON.stringify({
+        record: {
+          internal_no: Number(internal_no),
+          excel_file,
+          excel_sheet,
+          data,
+        },
+      }),
     });
     setEditing(null);
     load();
@@ -49,8 +59,8 @@ export default function AdminPage() {
         <tbody>
           {records.map((r, i) => (
             <tr key={i} onClick={() => setEditing(r)}>
-              {Object.keys(r).map((k) => (
-                <td key={k}>{String(r[k])}</td>
+              {Object.keys(records[0]).map((k) => (
+                <td key={k}>{String(r[k] ?? '')}</td>
               ))}
             </tr>
           ))}
