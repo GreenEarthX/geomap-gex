@@ -1,6 +1,8 @@
-# Geomap GEX 🌍
+# FACIS Issuer Platform Demo
 
-A Next.js app for visualizing renewable energy infrastructure using interactive maps (Leaflet).
+Eine kleine, deploybare Referenzanwendung für den FACIS Credential-Issuance-Flow. Die Startseite visualisiert das Zusammenspiel von Go-/Goa-Services, gRPC mit mTLS, NATS und der OID4VCI-Schnittstelle. Über **Issuance starten** lässt sich eine simulierte Pipeline bis zum Credential Offer ausführen.
+
+> Die Anwendung ist eine UI- und Architektur-Demo. Der enthaltene API-Endpunkt simuliert die Backend-Schritte und stellt weder echte Credentials noch Signaturen aus.
 
 ##  Setup
 
@@ -22,4 +24,12 @@ npm run dev
 ```
 Then visit: http://localhost:3000
 
+## Production build
+
+```bash
+npm run build
+npm start
+```
+
+Die Anwendung kann ohne zusätzliche Umgebungsvariablen auf gängigen Next.js-Plattformen oder als Node.js-Container bereitgestellt werden.
 
