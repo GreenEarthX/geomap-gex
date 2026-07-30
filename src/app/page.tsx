@@ -1,5 +1,5 @@
-import MapWrapper from './MapWrapper';
+import FacisDemo from "./components/FacisDemo";
 
 export default function Home() {
-  return <MapWrapper />;
+  return <FacisDemo />;
 }
